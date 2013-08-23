@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"bufio"
 	"os"
+	"time"
 )
 
 func main() {
@@ -31,9 +32,14 @@ func main() {
 		
 			timestamp := slice[1]
 			eventid := slice[2]
-			productid := slice[3]
-
-			fmt.Printf("{timestamp:%s, eventid:%s, productid:%s}\n", timestamp, eventid, productid)
+			personid := slice[3]
+			
+			// Setup to parse the Common Log Format. (http://en.wikipedia.org/wiki/Common_Log_Format) 
+			const nginxFormat = "02/Jan/2006:15:04:05 -0700"
+			parsedtimestamp, _ := time.Parse(nginxFormat, timestamp)
+			unixtimestamp := parsedtimestamp.Unix()
+			
+			fmt.Printf("{timestamp:%d, eventid:%s, personid:%s}\n", unixtimestamp, eventid, personid)
 		}
 	}
 	
