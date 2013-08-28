@@ -1,4 +1,4 @@
-package nginxparser
+package main
 
 import (
 	"bufio"
