@@ -47,7 +47,7 @@ func Parse(reader *bufio.Reader, recordEvent RecordEventHandler, setProperty Set
 			break
 		}
 
-		if err != nil && err != io.EOF {
+		if err != nil {
 			// Fail on other errors.
 			log.Fatal(err)
 		}
