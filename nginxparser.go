@@ -1,4 +1,4 @@
-package main
+package nginxparser
 
 import (
 	"bufio"
@@ -92,7 +92,7 @@ func Parse(reader *bufio.Reader, recordEvent RecordEventHandler, setProperty Set
 			case "a":
 				apiKey := values.Get("_k")
 				identity1 := values.Get("_p")
-				identity2 := values.Get("_p")
+				identity2 := values.Get("_n")
 
 				aliasUser(AliasUserValues{unixTimestamp, apiKey, identity1, identity2})
 			}
