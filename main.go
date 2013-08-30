@@ -27,9 +27,16 @@ var db *levigo.DB
 
 func main() {
 	// Setup command line flags.
-	var path = flag.String("path", "/Users/user/some/dir", "the path to scan for JSON files to parse and load into LevelDB")
+	var dbpath = flag.String("dbpath", "", "the path to use to store the LevelDB files")
+	var jsonpath = flag.String("jsonpath", "", "the path to scan for JSON files to parse and load into LevelDB")
 	var keys = flag.Bool("keys", false, "dumps the keys in LevelDB")
+
 	flag.Parse()
+	
+	if *dbpath == "" {
+		fmt.Println("no path specified in -dbpath")
+		return
+	}
 
 	// Setup the structs for LevelDB.
 	env := levigo.NewDefaultEnv()
@@ -38,7 +45,7 @@ func main() {
 	cache := levigo.NewLRUCache(1 << 20)
 	defer cache.Close()
 
-	// TODO: Figure out best options to use.
+	// TODO: Figure out the best options to use.
 	options := levigo.NewOptions()
 	options.SetErrorIfExists(false)
 	options.SetCache(cache)
@@ -53,10 +60,8 @@ func main() {
 	options.SetCreateIfMissing(true)
 	defer options.Close()
 
-	dbpath := "/Users/bahern/leveldb_instances/sample"
-
 	var err error
-	db, err = levigo.Open(dbpath, options)
+	db, err = levigo.Open(*dbpath, options)
 
 	if err != nil {
 		log.Fatal(err)
@@ -64,8 +69,8 @@ func main() {
 	defer db.Close()
 
 	// If the path flag was set then we'll load the given path into the DB.
-	if *path != "/Users/user/some/dir" {
-		err = filepath.Walk(*path, processFile)
+	if *jsonpath != "" {
+		err = filepath.Walk(*jsonpath, processFile)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -112,7 +117,7 @@ func main() {
 
 // Used by the call to filepath.Walk, this will iterate over the files
 func processFile(path string, f os.FileInfo, err error) error {
-	if f.IsDir() || !string.Contains(f.Name(), ".") {
+	if f.IsDir() || !strings.Contains(f.Name(), ".") {
 		// Guard dirs and useless files.
 		return nil
 	}
