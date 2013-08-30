@@ -58,7 +58,7 @@ func TestParseRecordEvents(t *testing.T) {
 func TestParseAliasUser(t *testing.T) {
 	for _, test := range aliasTests {
 		reader := bufio.NewReader(strings.NewReader(test.rawevent))
-		verify := func(values RecordEventValues) {
+		verify := func(values AliasUserValues) {
 			expectedInt(t, values.timestamp, test.timestamp, "timestamp")
 			expectedStr(t, values.apiKey, test.apiKey, "apiKey")
 			expectedStr(t, values.identity1, test.identity1, "identity1")
